@@ -1,0 +1,232 @@
+[gd_scene load_steps=10 format=3 uid="uid://4u276ol7g31v"]
+
+[ext_resource type="Texture2D" uid="uid://ctxfyrvriej0m" path="res://assets/images/bg fixx.png" id="2_1klm6"]
+[ext_resource type="Texture2D" uid="uid://cljudd1ioatqs" path="res://assets/images/buttonplay.png" id="3_enta8"]
+[ext_resource type="Texture2D" uid="uid://b2k1f3uerunuu" path="res://assets/images/buttonmateri.png" id="4_3rcf1"]
+[ext_resource type="Texture2D" uid="uid://b45onf8ji33bq" path="res://assets/images/buttonpetunjuk.png" id="5_dkv5i"]
+[ext_resource type="Texture2D" uid="uid://bhm0mmixds4pl" path="res://assets/images/setting.png" id="6_6fb3g"]
+[ext_resource type="Texture2D" uid="uid://cplsuev33mdb4" path="res://assets/images/keluar kecil.png" id="6_ce67y"]
+[ext_resource type="Texture2D" uid="uid://bb5lejnnxs50b" path="res://assets/images/keluar.png" id="6_ybr5d"]
+
+[sub_resource type="GDScript" id="GDScript_0tsd4"]
+script/source = "extends Control
+
+@onready var tombol_permainan = $MarginContainer/HBoxContainer/VBoxContainer/Tombol_Permainan as Button
+@onready var tombol_materi = $MarginContainer/HBoxContainer/VBoxContainer/Tombol_Materi as Button
+@onready var tombol_petunjuk = $MarginContainer/HBoxContainer/VBoxContainer/Tombol_Petunjuk as Button
+@onready var tombol_pengaturan = $ButtonSetting as Button
+@onready var tombol_exit = $Tombol_Exit as Button
+
+#node popup
+@onready var settings_popup = $SettingsPopup as PopupPanel
+@onready var music_toggle = $SettingsPopup/VBoxContainer/MusicToggle as CheckButton
+@onready var sound_toggle = $SettingsPopup/VBoxContainer/SoundToggle as CheckButton
+@onready var close_button = $SettingsPopup/VBoxContainer/CloseButton as Button
+
+@onready var start_game = preload(\"res://scenes/Main.tscn\") as PackedScene
+@onready var material_screen = preload(\"res://scenes/MaterialScene.tscn\") as PackedScene
+@onready var petunjuk_screen = preload(\"res://scenes/PetunjukScene.tscn\") as PackedScene
+
+# File untuk menyimpan pengaturan
+var config = ConfigFile.new()
+var config_path = \"user://settings.cfg\"
+
+func _ready():
+	tombol_permainan.button_down.connect(on_start_pressed)
+	tombol_materi.button_down.connect(on_material_pressed)
+	tombol_petunjuk.button_down.connect(on_petunjuk_pressed)
+	tombol_exit.button_down.connect(on_exit_pressed)
+	
+	# Hubungkan sinyal untuk tombol pengaturan dan popup
+	tombol_pengaturan.button_down.connect(on_settings_pressed)
+	music_toggle.toggled.connect(on_music_toggled)
+	sound_toggle.toggled.connect(on_sound_toggled)
+	close_button.button_down.connect(on_close_pressed)
+	
+	# Muat pengaturan audio
+	load_settings()
+	
+	# Sembunyikan popup saat start
+	settings_popup.hide()
+
+func on_start_pressed() -> void:
+	get_tree().change_scene_to_packed(start_game)
+
+func on_material_pressed() -> void:
+	get_tree().change_scene_to_packed(material_screen)
+
+func on_petunjuk_pressed() -> void:
+	get_tree().change_scene_to_packed(petunjuk_screen)
+
+func on_exit_pressed() -> void:
+	get_tree().quit()
+
+# Fungsi untuk tombol pengaturan
+func on_settings_pressed() -> void:
+	settings_popup.popup_centered()
+
+# Fungsi saat tombol musik ditekan
+func on_music_toggled(button_pressed: bool) -> void:
+	AudioServer.set_bus_mute(AudioServer.get_bus_index(\"Music\"), !button_pressed)
+	config.set_value(\"audio\", \"music_enabled\", button_pressed)
+	config.save(config_path)
+
+# Fungsi saat tombol suara ditekan
+func on_sound_toggled(button_pressed: bool) -> void:
+	AudioServer.set_bus_mute(AudioServer.get_bus_index(\"Sound\"), !button_pressed)
+	config.set_value(\"audio\", \"sound_enabled\", button_pressed)
+	config.save(config_path)
+
+# Fungsi saat tombol tutup ditekan
+func on_close_pressed() -> void:
+	settings_popup.hide()
+
+# Muat pengaturan dari file
+func load_settings() -> void:
+	var err = config.load(config_path)
+	if err != OK:
+		# Default jika file belum ada
+		config.set_value(\"audio\", \"music_enabled\", true)
+		config.set_value(\"audio\", \"sound_enabled\", true)
+		config.save(config_path)
+	
+	# Terapkan pengaturan
+	var music_enabled = config.get_value(\"audio\", \"music_enabled\", true)
+	var sound_enabled = config.get_value(\"audio\", \"sound_enabled\", true)
+	
+	music_toggle.button_pressed = music_enabled
+	sound_toggle.button_pressed = sound_enabled
+	
+	AudioServer.set_bus_mute(AudioServer.get_bus_index(\"Music\"), !music_enabled)
+	AudioServer.set_bus_mute(AudioServer.get_bus_index(\"Sound\"), !sound_enabled)
+"
+
+[sub_resource type="SystemFont" id="SystemFont_euuab"]
+font_names = PackedStringArray("Impact")
+
+[node name="Main_Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_0tsd4")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_1klm6")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 60
+
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="Control2" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(30, 120)
+layout_mode = 2
+
+[node name="Tombol_Permainan" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_euuab")
+theme_override_font_sizes/font_size = 30
+icon = ExtResource("3_enta8")
+
+[node name="Tombol_Materi" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_euuab")
+theme_override_font_sizes/font_size = 30
+icon = ExtResource("4_3rcf1")
+
+[node name="Tombol_Petunjuk" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_euuab")
+theme_override_font_sizes/font_size = 30
+icon = ExtResource("5_dkv5i")
+
+[node name="Tombol_Exit" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1042.0
+offset_top = 610.0
+offset_right = 1193.0
+offset_bottom = 666.0
+icon = ExtResource("6_ybr5d")
+
+[node name="SettingsPopup" type="PopupPanel" parent="."]
+size = Vector2i(200, 150)
+visible = true
+
+[node name="ColorRect" type="ColorRect" parent="SettingsPopup"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 196.0
+offset_bottom = 146.0
+color = Color(0.935472, 0.94388, 1, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPopup"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 196.0
+offset_bottom = 146.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MusicToggle" type="CheckButton" parent="SettingsPopup/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="SoundToggle" type="CheckButton" parent="SettingsPopup/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="CloseButton" type="Button" parent="SettingsPopup/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+icon = ExtResource("6_ce67y")
+
+[node name="ButtonSetting" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1115.0
+offset_top = 61.0
+offset_right = 1208.0
+offset_bottom = 163.0
+icon = ExtResource("6_6fb3g")

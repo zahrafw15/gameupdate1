@@ -1,0 +1,108 @@
+[gd_scene load_steps=3 format=3 uid="uid://cr3toevavpiyx"]
+
+[ext_resource type="Script" path="res://scripts/MaterialScene.gd" id="1_ut3lc"]
+[ext_resource type="Texture2D" uid="uid://bjk5r88hp5owf" path="res://assets/images/kembali.png" id="2_3jwgn"]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+script = ExtResource("1_ut3lc")
+
+[node name="LeftPanel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(256, 720)
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ChapterList" type="VBoxContainer" parent="LeftPanel"]
+layout_mode = 2
+
+[node name="ChapterButton1" type="Button" parent="LeftPanel/ChapterList"]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="ChapterButton2" type="Button" parent="LeftPanel/ChapterList"]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="ChapterButton3" type="Button" parent="LeftPanel/ChapterList"]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="ContentPanel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(1024, 720)
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -1024.0
+offset_top = -360.0
+offset_bottom = 360.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ContentPanel"]
+custom_minimum_size = Vector2(1004, 700)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ContentPanel/ScrollContainer"]
+custom_minimum_size = Vector2(1200, 700)
+layout_mode = 2
+
+[node name="Material1" type="VBoxContainer" parent="ContentPanel/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(400, 700)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="MaterialText1" type="Label" parent="ContentPanel/ScrollContainer/HBoxContainer/Material1"]
+custom_minimum_size = Vector2(380, 200)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="VideoPlayer1" type="VideoStreamPlayer" parent="ContentPanel/ScrollContainer/HBoxContainer/Material1"]
+custom_minimum_size = Vector2(380, 450)
+layout_mode = 2
+
+[node name="Material2" type="VBoxContainer" parent="ContentPanel/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(400, 700)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="MaterialText2" type="Label" parent="ContentPanel/ScrollContainer/HBoxContainer/Material2"]
+custom_minimum_size = Vector2(380, 200)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="VideoPlayer2" type="VideoStreamPlayer" parent="ContentPanel/ScrollContainer/HBoxContainer/Material2"]
+custom_minimum_size = Vector2(380, 450)
+layout_mode = 2
+
+[node name="Material3" type="VBoxContainer" parent="ContentPanel/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(400, 700)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="MaterialText3" type="Label" parent="ContentPanel/ScrollContainer/HBoxContainer/Material3"]
+custom_minimum_size = Vector2(380, 200)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="VideoPlayer3" type="VideoStreamPlayer" parent="ContentPanel/ScrollContainer/HBoxContainer/Material3"]
+custom_minimum_size = Vector2(380, 450)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="."]
+custom_minimum_size = Vector2(170, 50)
+offset_left = 30.0
+offset_top = 649.0
+offset_right = 200.0
+offset_bottom = 705.0
+size_flags_vertical = 8
+icon = ExtResource("2_3jwgn")
+icon_alignment = 1
